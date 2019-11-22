@@ -1,5 +1,7 @@
-from typing import Dict
+from typing import Dict, List
 from decorators import newobj
+from xml.dom import minidom
+import xml.etree.ElementTree as ET
 
 class InvalidAttributeNameError(Exception):
     def __init__(self, message, errors):
@@ -19,6 +21,7 @@ class AyxProperty:
         self.name: str = name
         self.value: str = value
         self.attributes: Dict[str, str] = dict({})
+        self.children: List['__class__'] = list()
 
     @newobj
     def set_attribute(self, key: str, value: str) -> '__class__':
@@ -36,3 +39,31 @@ class AyxProperty:
 
     def get_attributes(self) -> Dict[str, str]:
         return self.attributes
+
+    @newobj
+    def add_child(self, child: '__class__') -> '__class__':
+        self.children.append(child)
+
+    def toxml(self) -> ET.Element:
+        """Returns an XML representation of the property.
+        """
+        # Dummy element that ElementTree extend() will strip
+        root = ET.Element('root')
+
+        prop = ET.SubElement(root, self.name)
+        for key, val in self.attributes.items():
+            prop.set(key, val)
+        if self.value != '':
+            prop.text = self.value
+        
+        for child in self.children:
+            xml = child.toxml()
+            prop.extend(xml)
+        
+        return root
+
+    def __repr__(self) -> str:
+        xml = self.toxml()
+        text = ET.tostring(xml, 'utf-8')
+        parsed = minidom.parseString(text)
+        return parsed.toprettyxml(indent='    ')

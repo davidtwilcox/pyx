@@ -1,5 +1,6 @@
 from ayxproperty import AyxProperty
 from decorators import newobj
+from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 class Tool:
@@ -17,6 +18,8 @@ class Tool:
         self.engine_dll_entry_point: str = ''
 
     def toxml(self) -> ET.Element:
+        """Returns an XML representation of the tool.
+        """
         # Dummy element that ElementTree extend() will strip
         root = ET.Element('root')
 
@@ -30,3 +33,9 @@ class Tool:
         position.set('y', str(self.pos_y))
 
         return root
+
+    def __repr__(self) -> str:
+        xml = self.toxml()
+        text = ET.tostring(xml, 'utf-8')
+        parsed = minidom.parseString(text)
+        return parsed.toprettyxml(indent='    ')

@@ -64,7 +64,8 @@ class Workflow:
             'Author': AyxProperty('Author'),
             'Company': AyxProperty('Company'),
             'Copyright': AyxProperty('Copyright'),
-            'DescriptionLink': AyxProperty('DescriptionLink').set_attribute('actual', '').set_attribute('displayed', '')
+            'DescriptionLink': AyxProperty('DescriptionLink').set_attribute('actual', '').set_attribute('displayed', ''),
+            'Example': AyxProperty('Example').add_child(AyxProperty('Description')).add_child(AyxProperty('File'))
         })
 
     def write(self, filename: str = "", overwrite: bool = True) -> None:
@@ -75,16 +76,25 @@ class Workflow:
         If overwrite is False and a file exists with the same name, this
         method will raise an exception.
         """
+        if filename == "":
+            filename = self.name + '.yxmd'
+        
         if not overwrite and os.path.isfile(filename):
             raise FileExistsError('File "{}" already exists and overwrite is false'.format(filename))
 
-        def property_to_attributes(parent: ET.Element, prop: AyxProperty) -> None:
-            child = ET.SubElement(parent, prop.name)
-            for key, val in prop.get_attributes().items():
-                child.set(key, val)
-            if prop.value != '':
-                child.text = prop.value
+        pretty_xml = str(self)
 
+        with open(filename, 'w') as f:
+            f.write(pretty_xml)
+
+    def add_tool(self, tool: Tool) -> None:
+        """Adds the provided Tool instance to the workflow
+        """
+        self.tools[tool.tool_id] = tool
+
+    def toxml(self) -> ET.Element:
+        """Returns an XML representation of the workflow.
+        """
         ayx_doc = ET.Element('AlteryxDocument')
         ayx_doc.set('yxmdVer', self.yxmd_version)
 
@@ -98,19 +108,18 @@ class Workflow:
 
         properties = ET.SubElement(ayx_doc, 'Properties')
         for _, prop_val in self.properties.items():
-            property_to_attributes(properties, prop_val)
+            xml = prop_val.toxml()
+            properties.extend(xml)
 
         metainfo = ET.SubElement(properties, 'MetaInfo')
         for _, mi_val in self.metainfo.items():
-            property_to_attributes(metainfo, mi_val)
+            xml = mi_val.toxml()
+            metainfo.extend(xml)
 
-        workflow_text = ET.tostring(ayx_doc, 'utf-8')
-        reparsed = minidom.parseString(workflow_text)
+        return ayx_doc
 
-        with open(filename, 'w') as f:
-            f.write(reparsed.toprettyxml(indent='    '))
-
-    def add_tool(self, tool: Tool) -> None:
-        """Adds the provided Tool instance to the workflow
-        """
-        self.tools[tool.tool_id] = tool
+    def __repr__(self) -> str:
+        xml = self.toxml()
+        text = ET.tostring(xml, 'utf-8')
+        parsed = minidom.parseString(text)
+        return parsed.toprettyxml(indent='    ')
