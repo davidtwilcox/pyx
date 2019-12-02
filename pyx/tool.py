@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 class Tool:
     """
-    Represents an Alteryx tool (or Node in the workflow XML).
+    Base class for representing an Alteryx tool (or Node in the workflow XML).
     """
 
     def __init__(self, tool_id: str, configuration: str = ''):
