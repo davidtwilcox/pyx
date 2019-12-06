@@ -122,4 +122,4 @@ class Workflow:
         xml = self.toxml()
         text = ET.tostring(xml, 'utf-8')
         parsed = minidom.parseString(text)
-        return parsed.toprettyxml(indent='    ')
+        return parsed.toprettyxml(indent='  ')
