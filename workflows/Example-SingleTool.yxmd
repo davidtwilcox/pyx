@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2019.1">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="66" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File OutputFileName="" FileFormat="19" SearchSubDirs="False" RecordLimit="">E:\Data\Drug Thefts\Drug_Thefts.yxdb</File>
+          <FormatSpecificOptions />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Drug_Thefts.yxdb</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Date of Loss" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="Date" />
+            <Field name="Loss Type" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Address 1" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Address 2" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="City" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="State" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="ZIP Code" size="19" source="Formula: IF Length([ZIP Code]) &lt; 5 THEN &quot;0&quot; + [ZIP Code] ELSE [ZIP Code] ENDIF" type="V_String" />
+            <Field name="Full Address" size="2147483647" source="Formula: [Address 1] + &quot; &quot; + [Address 2] + &quot;, &quot; + [City] + &quot;, &quot; + [State] + &quot; &quot; + [ZIP Code]" type="V_String" />
+            <Field name="Incident ID" size="2147483647" source="Formula: [Date of Loss] + &quot;: &quot; + [Full Address]" type="V_String" />
+            <Field name="NDC" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Label Name" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Brand Name" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Generic Name" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Concat Dosage Strength" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Dosage Form" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="Package Size" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="Int32" />
+            <Field name="Package Desc" size="255" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="V_String" />
+            <Field name="NDC Drug Schedule" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="Int32" />
+            <Field name="Quantity Lost" source="File: G:\Data\Drug Thefts\FOIA 16-00081-AP.xlsx|||`Sheet1$`" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+  </Nodes>
+  <Connections />
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Example-SingleTool</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

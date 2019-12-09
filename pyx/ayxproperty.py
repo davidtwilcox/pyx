@@ -44,6 +44,10 @@ class AyxProperty:
     def add_child(self, child: '__class__') -> '__class__':
         self.children.append(child)
 
+    @newobj
+    def add_children(self, children: List['__class__']) -> '__class__':
+        self.children += children
+
     def toxml(self) -> ET.Element:
         """Returns an XML representation of the property.
         """

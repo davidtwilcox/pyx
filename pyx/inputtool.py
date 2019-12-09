@@ -1,9 +1,11 @@
 from ayxproperty import AyxProperty
 from tool import Tool
+from field import Field
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 from typing import Dict, List
 from dataclasses import dataclass
+import os
 
 @dataclass
 class InputToolConfiguration:
@@ -27,7 +29,7 @@ class InputTool(Tool):
     """
     Represents an Input tool in an Alteryx workflow.
     """
-    def __init__(self, tool_id: str, configuration: InputToolConfiguration):
+    def __init__(self, tool_id: str, configuration: InputToolConfiguration, record_info: List[Field]):
         super().__init__(tool_id)
         self.plugin = 'AlteryxBasePluginsGui.DbFileInput.DbFileInput'
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'
@@ -36,10 +38,18 @@ class InputTool(Tool):
         self.configuration = configuration
 
         self.guisettings: Dict[str, AyxProperty] = dict({
-            'GuiSettings': AyxProperty('GuiSettings').set_attribute('Plugin', self.plugin).add_child(
-                AyxProperty('Position').set_attribute('x', str(self.pos_x)).set_attribute('y', str(self.pos_y))
-            )
+            'Position': AyxProperty('Position').set_attribute('x', str(self.pos_x)).set_attribute('y', str(self.pos_y))
         })
+
+        fields = list()
+        for field in record_info:
+            fields.append(
+                AyxProperty('Field')
+                .set_attribute('name', field.Name)
+                .set_attribute('size', str(field.Size))
+                .set_attribute('source', 'File: ' + self.configuration.InputFileName)
+                .set_attribute('type', str(field.Type.name))
+            )
 
         self.properties: Dict[str, AyxProperty] = dict({
             'Configuration': AyxProperty('Configuration').add_child(
@@ -60,7 +70,17 @@ class InputTool(Tool):
                 .add_child(AyxProperty('HeaderRow', str(self.configuration.HeaderRow)))
                 .add_child(AyxProperty('IgnoreQuotes', self.configuration.IgnoreQuotes))
                 .add_child(AyxProperty('ImportLine', str(self.configuration.ImportLine)))
-            )
+            ),
+            'Annotation': AyxProperty('Annotation')
+                .set_attribute('DisplayMode', '0')
+                .add_child(AyxProperty('Name'))
+                .add_child(AyxProperty('DefaultAnnotationText', os.path.basename(self.configuration.InputFileName)))
+                .add_child(AyxProperty('Left').set_attribute('value', 'False')),
+            'Dependencies': AyxProperty('Dependencies')
+                .add_child(AyxProperty('Implicit')),
+            'MetaInfo': AyxProperty('MetaInfo')
+                .set_attribute('connection', 'Output')
+                .add_child(AyxProperty('RecordInfo').add_children(fields))
         })
 
         self.engine_settings = AyxProperty('EngineSettings').set_attribute('EngineDll', self.engine_dll).set_attribute('EngineDllEntryPoint', self.engine_dll_entry_point)
@@ -75,6 +95,7 @@ class InputTool(Tool):
         node.set('ToolID', self.tool_id)
 
         guisettings = ET.SubElement(node, 'GuiSettings')
+        guisettings.set('Plugin', self.plugin)
         for _, guisettings_val in self.guisettings.items():
             xml = guisettings_val.toxml()
             guisettings.extend(xml)
@@ -82,7 +103,7 @@ class InputTool(Tool):
         properties = ET.SubElement(node, 'Properties')
         for _, prop_val in self.properties.items():
             xml = prop_val.toxml()
-            properties.extend(xml)
+            properties.extend(xml)        
 
         node.extend(self.engine_settings.toxml())
 
