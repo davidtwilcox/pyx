@@ -1,6 +1,7 @@
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
+from typing import Tuple, List
 
 class Tool(ABC):
     """
@@ -9,12 +10,19 @@ class Tool(ABC):
 
     def __init__(self, tool_id: str):
         self.tool_id: str = tool_id
-        self.pos_x: int = 0
-        self.pos_y: int = 0
+        self.position: Tuple[int, int] = (0, 0)
         self.plugin: str = ''
         self.engine_dll: str = ''
         self.engine_dll_entry_point: str = ''
+        self.inputs: List[str] = list()
+        self.outputs: List[str] = list()
         super().__init__()
+
+    def num_inputs(self) -> int:
+        return len(self.inputs)
+
+    def num_outputs(self) -> int:
+        return len(self.outputs)
 
     @abstractmethod
     def toxml(self) -> ET.Element:

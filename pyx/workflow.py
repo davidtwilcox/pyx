@@ -1,5 +1,7 @@
 from ayxproperty import AyxProperty
 from tool import Tool
+from connection import Connection
+from decorators import newobj
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 import os
@@ -32,8 +34,9 @@ class Workflow:
         self.name = name
         self.yxmd_version: str = yxmd_version
         self.tools: Dict[str, Tool] = dict({})
-        self.connections = []
-        
+        self.connections: List[Connection] = list()
+
+    def __set_configuration__(self) -> None:                
         self.properties: Dict[str, AyxProperty] = dict({
             'Memory': AyxProperty('Memory').set_attribute('default', 'True'),
             'GlobalRecordLimit': AyxProperty('GlobalRecordLimit').set_attribute('value', '0'),
@@ -68,7 +71,20 @@ class Workflow:
             'Example': AyxProperty('Example').add_child(AyxProperty('Description')).add_child(AyxProperty('File'))
         })
 
-    def write(self, filename: str = "", overwrite: bool = True) -> None:
+    @newobj
+    def add_tool(self, tool: Tool) -> '__class__':
+        """Adds the provided Tool instance to the workflow
+        """
+        self.tools[tool.tool_id] = tool
+
+    @newobj
+    def add_connection(self, origin: Tool, origin_output: str, destination: Tool, destination_input: str) -> '__class__':
+        """Adds a connection from the origin tool to the destination tool.
+        """
+        self.connections.append(Connection(origin, origin_output, destination, destination_input))
+
+    @newobj
+    def write(self, filename: str = "", overwrite: bool = True) -> '__class__':
         """Writes the workflow to the specified file.
 
         If no filename is provided, the workflow name is used. If overwrite
@@ -87,14 +103,11 @@ class Workflow:
         with open(filename, 'w') as f:
             f.write(pretty_xml)
 
-    def add_tool(self, tool: Tool) -> None:
-        """Adds the provided Tool instance to the workflow
-        """
-        self.tools[tool.tool_id] = tool
-
     def toxml(self) -> ET.Element:
         """Returns an XML representation of the workflow.
         """
+        self.__set_configuration__()
+
         ayx_doc = ET.Element('AlteryxDocument')
         ayx_doc.set('yxmdVer', self.yxmd_version)
 
@@ -103,8 +116,8 @@ class Workflow:
             tools.extend(tool_val.toxml())
         
         connections = ET.SubElement(ayx_doc, 'Connections')
-        if len(self.connections) > 0:
-            print("Not implemented")
+        for connection in self.connections:
+            connections.extend(connection.toxml())
 
         properties = ET.SubElement(ayx_doc, 'Properties')
         for _, prop_val in self.properties.items():

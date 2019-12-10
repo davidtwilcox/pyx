@@ -12,18 +12,18 @@ class InputToolConfiguration:
     """
     Contains configuration information for an InputTool instance.
     """
-    InputFileName: str = ''
-    RecordLimit: str = ''
-    SearchSubDirs: bool = False
-    FileFormat: int = 0
-    CodePage: int = 28591
-    Delimiter: str = ','
-    IgnoreErrors: bool = False
-    FieldLength: int = 254
-    AllowSharedWrite: bool = False
-    HeaderRow: bool = False
-    IgnoreQuotes: str = 'DoubleQuotes'
-    ImportLine: int = 1
+    input_file_name: str = ''
+    record_limit: str = ''
+    search_sub_dirs: bool = False
+    file_format: int = 0
+    code_page: int = 28591
+    delimiter: str = ','
+    ignore_errors: bool = False
+    field_length: int = 254
+    allow_shared_write: bool = False
+    header_row: bool = False
+    ignore_quotes: str = 'DoubleQuotes'
+    import_line: int = 1
 
 class InputTool(Tool):
     """
@@ -34,47 +34,50 @@ class InputTool(Tool):
         self.plugin = 'AlteryxBasePluginsGui.DbFileInput.DbFileInput'
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'
         self.engine_dll_entry_point = 'AlteryxDbFileInput'
+        self.outputs.append('Output')
 
         self.configuration = configuration
+        self.record_info = record_info
 
+    def __set_configuration__(self) -> None:
         self.guisettings: Dict[str, AyxProperty] = dict({
-            'Position': AyxProperty('Position').set_attribute('x', str(self.pos_x)).set_attribute('y', str(self.pos_y))
+            'Position': AyxProperty('Position').set_attribute('x', str(self.position[0])).set_attribute('y', str(self.position[1]))
         })
 
-        fields = list()
-        for field in record_info:
+        fields: List[AyxProperty] = list()
+        for field in self.record_info:
             fields.append(
                 AyxProperty('Field')
-                .set_attribute('name', field.Name)
-                .set_attribute('size', str(field.Size))
-                .set_attribute('source', 'File: ' + self.configuration.InputFileName)
-                .set_attribute('type', str(field.Type.name))
+                .set_attribute('name', field.name)
+                .set_attribute('size', str(field.size))
+                .set_attribute('source', 'File: ' + self.configuration.input_file_name)
+                .set_attribute('type', str(field.alteryx_type.name))
             )
 
         self.properties: Dict[str, AyxProperty] = dict({
             'Configuration': AyxProperty('Configuration').add_child(
                 AyxProperty('Passwords')
             ).add_child(
-                AyxProperty('File', self.configuration.InputFileName)
+                AyxProperty('File', self.configuration.input_file_name)
                 .set_attribute('OutputFileName', '')
-                .set_attribute('RecordLimit', str(self.configuration.RecordLimit))
-                .set_attribute('SearchSubDirs', str(self.configuration.SearchSubDirs))
-                .set_attribute('FileFormat', str(self.configuration.FileFormat))
+                .set_attribute('RecordLimit', str(self.configuration.record_limit))
+                .set_attribute('SearchSubDirs', str(self.configuration.search_sub_dirs))
+                .set_attribute('FileFormat', str(self.configuration.file_format))
             ).add_child(
                 AyxProperty('FormatSpecificOptions')
-                .add_child(AyxProperty('CodePage', str(self.configuration.CodePage)))
-                .add_child(AyxProperty('Delimeter', self.configuration.Delimiter))
-                .add_child(AyxProperty('IgnoreErrors', str(self.configuration.IgnoreErrors)))
-                .add_child(AyxProperty('FieldLen', str(self.configuration.FieldLength)))
-                .add_child(AyxProperty('AllowSharedWrite', str(self.configuration.AllowSharedWrite)))
-                .add_child(AyxProperty('HeaderRow', str(self.configuration.HeaderRow)))
-                .add_child(AyxProperty('IgnoreQuotes', self.configuration.IgnoreQuotes))
-                .add_child(AyxProperty('ImportLine', str(self.configuration.ImportLine)))
+                .add_child(AyxProperty('CodePage', str(self.configuration.code_page)))
+                .add_child(AyxProperty('Delimeter', self.configuration.delimiter))
+                .add_child(AyxProperty('IgnoreErrors', str(self.configuration.ignore_errors)))
+                .add_child(AyxProperty('FieldLen', str(self.configuration.field_length)))
+                .add_child(AyxProperty('AllowSharedWrite', str(self.configuration.allow_shared_write)))
+                .add_child(AyxProperty('HeaderRow', str(self.configuration.header_row)))
+                .add_child(AyxProperty('IgnoreQuotes', self.configuration.ignore_quotes))
+                .add_child(AyxProperty('ImportLine', str(self.configuration.import_line)))
             ),
             'Annotation': AyxProperty('Annotation')
                 .set_attribute('DisplayMode', '0')
                 .add_child(AyxProperty('Name'))
-                .add_child(AyxProperty('DefaultAnnotationText', os.path.basename(self.configuration.InputFileName)))
+                .add_child(AyxProperty('DefaultAnnotationText', os.path.basename(self.configuration.input_file_name)))
                 .add_child(AyxProperty('Left').set_attribute('value', 'False')),
             'Dependencies': AyxProperty('Dependencies')
                 .add_child(AyxProperty('Implicit')),
@@ -88,6 +91,8 @@ class InputTool(Tool):
     def toxml(self) -> ET.Element:
         """Returns an XML representation of the tool.
         """
+        self.__set_configuration__()
+
         # Dummy element that ElementTree extend() will strip
         root = ET.Element('root')
 

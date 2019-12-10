@@ -1,5 +1,3 @@
-from xml.dom import minidom
-import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from enum import Enum
 
@@ -23,7 +21,10 @@ class AlteryxDataType(Enum):
 
 @dataclass
 class Field:
-    Name: str = ''
-    Size: int = 254
-    Source: str = ''
-    Type: AlteryxDataType = AlteryxDataType.V_STRING
+    """
+    Represents a field (columnn) in a record.
+    """
+    name: str = ''
+    size: int = 254
+    source: str = ''
+    alteryx_type: AlteryxDataType = AlteryxDataType.V_STRING
