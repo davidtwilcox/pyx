@@ -118,12 +118,26 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Expression>[City] != "DENVER" AND [Responder] == "Yes"</Expression>
-          <Mode>Custom</Mode>
+          <Mode>Simple</Mode>
+          <Simple>
+            <Operator>!=</Operator>
+            <Field>City</Field>
+            <Operands>
+              <IgnoreTimeInDateTime>True</IgnoreTimeInDateTime>
+              <DateType>fixed</DateType>
+              <PeriodDate>2019-12-19 14:33:35</PeriodDate>
+              <PeriodType>
+              </PeriodType>
+              <PeriodCount>0</PeriodCount>
+              <Operand>DENVER</Operand>
+              <StartDate>2019-12-19 14:33:35</StartDate>
+              <EndDate>2019-12-19 14:33:35</EndDate>
+            </Operands>
+          </Simple>
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <DefaultAnnotationText>[City] != "DENVER" AND [Responder] == "Yes"</DefaultAnnotationText>
+          <DefaultAnnotationText>[City] != "DENVER"</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
       </Properties>
@@ -214,7 +228,7 @@
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
       <NameIsFileName value="True" />
-      <Name>Example-Simple</Name>
+      <Name>Example-Simple2</Name>
       <Description />
       <RootToolName />
       <ToolVersion />

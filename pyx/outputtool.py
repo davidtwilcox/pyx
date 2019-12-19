@@ -8,82 +8,64 @@ from dataclasses import dataclass
 import os
 
 @dataclass
-class InputToolConfiguration:
+class OutputToolConfiguration:
     """
-    Contains configuration information for an InputTool instance.
+    Contains configuration information for an OutputTool isntance.
     """
-    input_file_name: str = ''
-    record_limit: str = ''
-    search_sub_dirs: bool = False
+    output_file_name: str = ''
+    max_records: int = -1 
     file_format: int = 0
-    code_page: int = 28591
+    line_end_style: str = 'CRLF'
     delimiter: str = ','
-    ignore_errors: bool = False
-    field_length: int = 254
-    allow_shared_write: bool = False
-    header_row: bool = False
-    ignore_quotes: str = 'DoubleQuotes'
-    import_line: int = 1
+    force_quotes: bool = False
+    header_row: bool = True
+    code_page: int = 28591
+    write_bom: bool = True
+    multi_file: bool = False
 
-class InputTool(Tool):
+class OutputTool(Tool):
     """
-    Represents an Input tool in an Alteryx workflow.
+    Represents an Output tool in an Alteryx workflow.
     """
-    def __init__(self, tool_id: str, configuration: InputToolConfiguration, record_info: List[Field]):
+    def __init__(self, tool_id: str, configuration: OutputToolConfiguration):
         super().__init__(tool_id)
-        self.plugin = 'AlteryxBasePluginsGui.DbFileInput.DbFileInput'
+        self.plugin = 'AlteryxBasePluginsGui.DbFileOutput.DbFileOutput'
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'
-        self.engine_dll_entry_point = 'AlteryxDbFileInput'
-        self.outputs.append('Output')
-
+        self.engine_dll_entry_point = 'AlteryxDbFileOutput'
+        self.inputs.append('Input')
+        
         self.configuration = configuration
-        self.record_info = record_info
-
+        
     def __set_configuration__(self) -> None:
         self.guisettings: Dict[str, AyxProperty] = dict({
             'Position': AyxProperty('Position').set_attribute('x', str(self.position[0])).set_attribute('y', str(self.position[1]))
         })
 
-        fields: List[AyxProperty] = list()
-        for field in self.record_info:
-            fields.append(
-                AyxProperty('Field')
-                .set_attribute('name', field.name)
-                .set_attribute('size', str(field.size))
-                .set_attribute('source', 'File: ' + self.configuration.input_file_name)
-                .set_attribute('type', str(field.alteryx_type.name))
-            )
-
         self.properties: Dict[str, AyxProperty] = dict({
             'Configuration': AyxProperty('Configuration').add_child(
                 AyxProperty('Passwords')
             ).add_child(
-                AyxProperty('File', self.configuration.input_file_name)
-                .set_attribute('OutputFileName', '')
-                .set_attribute('RecordLimit', str(self.configuration.record_limit))
-                .set_attribute('SearchSubDirs', str(self.configuration.search_sub_dirs))
+                AyxProperty('File', self.configuration.output_file_name)
+                .set_attribute('MaxRecords', self._optional_numeric_value(self.configuration.max_records))
                 .set_attribute('FileFormat', str(self.configuration.file_format))
             ).add_child(
                 AyxProperty('FormatSpecificOptions')
-                .add_child(AyxProperty('CodePage', str(self.configuration.code_page)))
+                .add_child(AyxProperty('LineEndStyle', self.configuration.line_end_style))
                 .add_child(AyxProperty('Delimeter', self.configuration.delimiter))
-                .add_child(AyxProperty('IgnoreErrors', str(self.configuration.ignore_errors)))
-                .add_child(AyxProperty('FieldLen', str(self.configuration.field_length)))
-                .add_child(AyxProperty('AllowSharedWrite', str(self.configuration.allow_shared_write)))
+                .add_child(AyxProperty('ForceQuotes', str(self.configuration.force_quotes)))
                 .add_child(AyxProperty('HeaderRow', str(self.configuration.header_row)))
-                .add_child(AyxProperty('IgnoreQuotes', self.configuration.ignore_quotes))
-                .add_child(AyxProperty('ImportLine', str(self.configuration.import_line)))
+                .add_child(AyxProperty('CodePage', str(self.configuration.code_page)))
+                .add_child(AyxProperty('WriteBOM', str(self.configuration.write_bom)))
+            ).add_child(
+                AyxProperty('MultiFile', str(self.configuration.multi_file))
             ),
             'Annotation': AyxProperty('Annotation')
                 .set_attribute('DisplayMode', '0')
                 .add_child(AyxProperty('Name'))
-                .add_child(AyxProperty('DefaultAnnotationText', os.path.basename(self.configuration.input_file_name)))
+                .add_child(AyxProperty('DefaultAnnotationText', os.path.basename(self.configuration.output_file_name)))
                 .add_child(AyxProperty('Left').set_attribute('value', 'False')),
             'Dependencies': AyxProperty('Dependencies')
-                .add_child(AyxProperty('Implicit')),
-            'MetaInfo': AyxProperty('MetaInfo')
-                .set_attribute('connection', 'Output')
-                .add_child(AyxProperty('RecordInfo').add_children(fields))
+                .add_child(AyxProperty('Implicit'))
         })
 
         self.engine_settings = AyxProperty('EngineSettings').set_attribute('EngineDll', self.engine_dll).set_attribute('EngineDllEntryPoint', self.engine_dll_entry_point)
@@ -114,4 +96,3 @@ class InputTool(Tool):
         node.extend(self.engine_settings.toxml())
 
         return root
-

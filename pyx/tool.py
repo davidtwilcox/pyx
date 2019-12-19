@@ -24,12 +24,12 @@ class Tool(ABC):
     def num_outputs(self) -> int:
         return len(self.outputs)
 
+    def _optional_numeric_value(self, value: int) -> str:
+        if value < 0:
+            return ''
+        else:
+            return str(value)
+
     @abstractmethod
     def toxml(self) -> ET.Element:
         pass
-
-    def __repr__(self) -> str:
-        xml = self.toxml()
-        text = ET.tostring(xml, 'utf-8')
-        parsed = minidom.parseString(text)
-        return parsed.toprettyxml(indent='    ')

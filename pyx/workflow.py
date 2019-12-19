@@ -5,6 +5,7 @@ from decorators import newobj
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 import os
+import subprocess
 from typing import Dict, List
 
 class Workflow:
@@ -73,13 +74,15 @@ class Workflow:
 
     @newobj
     def add_tool(self, tool: Tool) -> '__class__':
-        """Adds the provided Tool instance to the workflow
+        """
+        Adds the provided Tool instance to the workflow
         """
         self.tools[tool.tool_id] = tool
 
     @newobj
     def add_connection(self, origin: Tool, origin_output: str, destination: Tool, destination_input: str) -> '__class__':
-        """Adds a connection from the origin tool to the destination tool.
+        """
+        Adds a connection from the origin tool to the destination tool.
         """
         self.connections.append(Connection(origin, origin_output, destination, destination_input))
 
@@ -102,6 +105,30 @@ class Workflow:
 
         with open(filename, 'w') as f:
             f.write(pretty_xml)
+
+    @newobj
+    def run(self, executable_path: str, filename: str = "", overwrite: bool = True) -> '__class__':
+        """Runs the workflow using a locally installed copy of the Alteryx engine.
+
+        If no filename is provided, the workflow name is used. If overwrite
+        is True, then any existing file with the same name will be overwritten.
+        If overwrite is False and a file exists with the same name, this
+        method will raise an exception.
+        """
+        if filename == "":
+            filename = self.name + '.yxmd'
+        
+        if not overwrite and os.path.isfile(filename):
+            raise FileExistsError('File "{}" already exists and overwrite is false'.format(filename))
+
+        pretty_xml = str(self)
+
+        with open(filename, 'w') as f:
+            f.write(pretty_xml)
+
+        cmd = executable_path + ' ' + filename
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, creationflags=0x08000000)
+        process.wait()
 
     def toxml(self) -> ET.Element:
         """Returns an XML representation of the workflow.
@@ -135,4 +162,4 @@ class Workflow:
         xml = self.toxml()
         text = ET.tostring(xml, 'utf-8')
         parsed = minidom.parseString(text)
-        return parsed.toprettyxml(indent='  ')
+        return parsed.toprettyxml(indent='  ').replace('&quot;', '"')
