@@ -1,5 +1,6 @@
 from functools import wraps
 
+
 def newobj(method):
     @wraps(method)
     def inner(self, *args, **kwargs):

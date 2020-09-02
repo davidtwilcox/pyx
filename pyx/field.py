@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
+
 class AlteryxDataType(Enum):
     STRING = 1
     WSTRING = 2
@@ -18,6 +19,7 @@ class AlteryxDataType(Enum):
     DATE_TIME = 14
     BOOL = 15
     SPATIAL_OBJ = 16
+
 
 @dataclass
 class Field:

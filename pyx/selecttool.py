@@ -1,10 +1,9 @@
-from ayxproperty import AyxProperty
-from tool import Tool
-from field import Field
-from xml.dom import minidom
+from .ayxproperty import AyxProperty
+from .tool import Tool
 import xml.etree.ElementTree as ET
 from typing import Dict, List
 from dataclasses import dataclass
+
 
 @dataclass
 class SelectField:
@@ -14,6 +13,7 @@ class SelectField:
     field: str = ''
     selected: bool = False
 
+
 @dataclass
 class SelectToolConfiguration:
     """
@@ -21,6 +21,7 @@ class SelectToolConfiguration:
     """
     order_changed: bool = False
     comma_decimal: bool = False
+
 
 class SelectTool(Tool):
     """

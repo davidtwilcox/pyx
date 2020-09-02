@@ -1,10 +1,9 @@
-from ayxproperty import AyxProperty
-from tool import Tool
-from field import Field
-from xml.dom import minidom
+from .ayxproperty import AyxProperty
+from .tool import Tool
 import xml.etree.ElementTree as ET
 from typing import Dict, List
 from dataclasses import dataclass
+
 
 @dataclass
 class AutofieldField:
@@ -13,6 +12,7 @@ class AutofieldField:
     """
     field: str = ''
     selected: bool = True
+
 
 class AutofieldTool(Tool):
     """

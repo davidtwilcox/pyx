@@ -1,11 +1,12 @@
-from workflow import Workflow
-from field import Field
-from inputtool import InputToolConfiguration, InputTool
-from autofieldtool import AutofieldField, AutofieldTool
-from filtertool import FilterMode,FilterToolConfiguration, FilterTool
-from selecttool import SelectField, SelectToolConfiguration, SelectTool
-from outputtool import OutputToolConfiguration, OutputTool
+from pyx.workflow import Workflow
+from pyx.field import Field
+from pyx.inputtool import InputToolConfiguration, InputTool
+from pyx.autofieldtool import AutofieldField, AutofieldTool
+from pyx.filtertool import FilterMode,FilterToolConfiguration, FilterTool
+from pyx.selecttool import SelectField, SelectToolConfiguration, SelectTool
+from pyx.outputtool import OutputToolConfiguration, OutputTool
 from typing import List
+
 
 def main():
     input_file_name: str = 'C:\\Program Files\\Alteryx\\Samples\\en\\SampleData\\Customers.csv'
@@ -91,6 +92,7 @@ def main():
         .add_connection(filter_tool, 'True', output_tool, 'Input') \
         .write() \
         .run('"C:\\Program Files\\Alteryx\\bin\\AlteryxEngineCmd.exe"')
+
 
 if __name__ == '__main__':
     main()

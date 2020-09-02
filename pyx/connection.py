@@ -1,7 +1,7 @@
-from tool import Tool
-from xml.dom import minidom
+from .tool import Tool
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
+
 
 @dataclass
 class Connection:

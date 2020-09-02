@@ -1,7 +1,9 @@
-from typing import Dict, List
-from decorators import newobj
+from .decorators import newobj
+from .decorators import newobj
 from xml.dom import minidom
+from typing import Dict, List
 import xml.etree.ElementTree as ET
+
 
 class InvalidAttributeNameError(Exception):
     def __init__(self, message, errors):
@@ -11,7 +13,8 @@ class InvalidAttributeNameError(Exception):
         super(InvalidAttributeNameError, self).__init__('message: {}, errors: {}'.format(message, errors))
 
     def __reduce__(self):
-        return (InvalidAttributeNameError, (self.message, self.errors))
+        return InvalidAttributeNameError, (self.message, self.errors)
+
 
 class AyxProperty:
     """

@@ -1,7 +1,5 @@
-from ayxproperty import AyxProperty
-from tool import Tool
-from field import Field
-from xml.dom import minidom
+from .ayxproperty import AyxProperty
+from .tool import Tool
 import xml.etree.ElementTree as ET
 from typing import Dict, List
 from dataclasses import dataclass
@@ -46,7 +44,7 @@ class OutputTool(Tool):
                 AyxProperty('Passwords')
             ).add_child(
                 AyxProperty('File', self.configuration.output_file_name)
-                .set_attribute('MaxRecords', self._optional_numeric_value(self.configuration.max_records))
+                .set_attribute('MaxRecords', Tool._optional_numeric_value(self.configuration.max_records))
                 .set_attribute('FileFormat', str(self.configuration.file_format))
             ).add_child(
                 AyxProperty('FormatSpecificOptions')

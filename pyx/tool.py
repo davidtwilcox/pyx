@@ -1,7 +1,7 @@
-from xml.dom import minidom
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
 from typing import Tuple, List
+
 
 class Tool(ABC):
     """
@@ -24,7 +24,8 @@ class Tool(ABC):
     def num_outputs(self) -> int:
         return len(self.outputs)
 
-    def _optional_numeric_value(self, value: int) -> str:
+    @staticmethod
+    def _optional_numeric_value(value: int) -> str:
         if value < 0:
             return ''
         else:

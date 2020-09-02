@@ -1,11 +1,11 @@
-from ayxproperty import AyxProperty
-from tool import Tool
-from field import Field
-from xml.dom import minidom
+from .ayxproperty import AyxProperty
+from .tool import Tool
+from .field import Field
 import xml.etree.ElementTree as ET
 from typing import Dict, List
 from dataclasses import dataclass
 import os
+
 
 @dataclass
 class InputToolConfiguration:
@@ -24,6 +24,7 @@ class InputToolConfiguration:
     header_row: bool = False
     ignore_quotes: str = 'DoubleQuotes'
     import_line: int = 1
+
 
 class InputTool(Tool):
     """

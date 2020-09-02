@@ -1,12 +1,13 @@
-from ayxproperty import AyxProperty
-from tool import Tool
-from connection import Connection
-from decorators import newobj
+from .ayxproperty import AyxProperty
+from .tool import Tool
+from .connection import Connection
+from .decorators import newobj
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 import os
 import subprocess
 from typing import Dict, List
+
 
 class Workflow:
     """
