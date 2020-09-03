@@ -1,20 +1,22 @@
-from .ayxproperty import AyxProperty
-from .tool import Tool
-from .connection import Connection
-from .decorators import newobj
-from xml.dom import minidom
-import xml.etree.ElementTree as ET
 import os
 import subprocess
-from typing import Dict, List
+import xml.etree.ElementTree as ET
+from typing import Dict, OrderedDict, List, Any
+from xml.dom import minidom
+import xmltodict
+
+from .connection import Connection
+from .decorators import newobj
+from .tool import Tool
+from .tool_factory import ToolFactory
 
 
 class Workflow:
     """
     Contains operations to create, modify, read, and write Alteryx workflows.
     """
-    
-    def __init__(self, name: str, yxmd_version: str):
+
+    def __init__(self):
         """Initializes the Workflow instance with a name, yxmd file version, and default properties.
 
         The name can be an arbitrary string. If no file name is specified when the
@@ -33,50 +35,64 @@ class Workflow:
         :return: no value
         :rtype: none
         """
-        self.name = name
-        self.yxmd_version: str = yxmd_version
-        self.tools: Dict[str, Tool] = dict({})
-        self.connections: List[Connection] = list()
+        self._name: str = ''
+        self._filename: str = ''
+        self._yxmd_version: str = ''
+        self._tools: Dict[str, Tool] = dict({})
+        self._connections: List[Connection] = list()
+        self._properties: OrderedDict[Any, Any] = dict({})
 
-    def __set_configuration__(self) -> None:                
-        self.properties: Dict[str, AyxProperty] = dict({
-            'Memory': AyxProperty('Memory').set_attribute('default', 'True'),
-            'GlobalRecordLimit': AyxProperty('GlobalRecordLimit').set_attribute('value', '0'),
-            'TempFiles': AyxProperty('TempFiles').set_attribute('default', 'True'),
-            'Annotation': AyxProperty('Annotation').set_attribute('on', 'True').set_attribute('includeToolName', 'False'),
-            'ConvErrorLimit': AyxProperty('ConvErrorLimit').set_attribute('value', 'False'),
-            'ConvErrorLimit_Stop': AyxProperty('ConvErrorLimit_Stop').set_attribute('value', 'False'),
-            'CancelOnError': AyxProperty('CancelOnError').set_attribute('value', 'False'),
-            'DisableBrowse': AyxProperty('DisableBrowse').set_attribute('value', 'False'),
-            'EnablePerformanceProfiling': AyxProperty('EnablePerformanceProfiling').set_attribute('value', 'False'),
-            'DisableAllOutput': AyxProperty('DisableAllOutput').set_attribute('value', 'False'),
-            'ShowAllMacroMessages': AyxProperty('ShowAllMacroMessages').set_attribute('value', 'False'),
-            'ShowConnectionStatusIsOn': AyxProperty('ShowConnectionStatusIsOn').set_attribute('value', 'True'),
-            'ShowConnectionStatusOnlyWhenRunning': AyxProperty('ShowConnectionStatusOnlyWhenRunning').set_attribute('value', 'True'),
-            'ZoomLevel': AyxProperty('ZoomLevel').set_attribute('value', '0'),
-            'LayoutType': AyxProperty('LayoutType', 'Horizontal')
-        })
+    @property
+    def name(self) -> str:
+        return self._name
 
-        self.metainfo: Dict[str, AyxProperty] = dict({
-            'NameIsFileName': AyxProperty('NameIsFileName').set_attribute('value', 'True'),
-            'Name': AyxProperty('Name', self.name),
-            'Description': AyxProperty('Description'),
-            'RootToolName': AyxProperty('RootToolName'),
-            'ToolVersion': AyxProperty('ToolVersion'),
-            'ToolInDb': AyxProperty('ToolInDb').set_attribute('value', 'False'),
-            'CategoryName': AyxProperty('CategoryName'),
-            'SearchTags': AyxProperty('SearchTags'),
-            'Author': AyxProperty('Author'),
-            'Company': AyxProperty('Company'),
-            'Copyright': AyxProperty('Copyright'),
-            'DescriptionLink': AyxProperty('DescriptionLink').set_attribute('actual', '').set_attribute('displayed', ''),
-            'Example': AyxProperty('Example').add_child(AyxProperty('Description')).add_child(AyxProperty('File'))
-        })
+    @name.setter
+    def name(self, value: str) -> None:
+        self._name = value
+
+    @property
+    def filename(self) -> str:
+        return self._filename
+
+    @filename.setter
+    def filename(self, value: str) -> None:
+        self._filename = value
+
+    @property
+    def yxmd_version(self) -> str:
+        return self._yxmd_version
+
+    @yxmd_version.setter
+    def yxmd_version(self, value: str) -> None:
+        self._yxmd_version = value
+
+    @property
+    def tools(self) -> Dict[str, Tool]:
+        return self._tools
+
+    @tools.setter
+    def tools(self, value: Dict[str, Tool]) -> None:
+        self._tools = value
+
+    @property
+    def connections(self) -> List[Connection]:
+        return self._connections
+
+    @connections.setter
+    def connections(self, value: List[Connection]) -> None:
+        self._connections = value
+
+    @property
+    def properties(self) -> OrderedDict[Any, Any]:
+        return self._properties
+
+    @properties.setter
+    def properties(self, value: OrderedDict[Any, Any]) -> None:
+        self._properties = value
 
     @newobj
     def add_tool(self, tool: Tool) -> '__class__':
-        """
-        Adds the provided Tool instance to the workflow
+        """Adds the provided Tool instance to the workflow
         """
         self.tools[tool.tool_id] = tool
 
@@ -88,27 +104,101 @@ class Workflow:
         self.connections.append(Connection(origin, origin_output, destination, destination_input))
 
     @newobj
-    def write(self, filename: str = "", overwrite: bool = True) -> '__class__':
-        """Writes the workflow to the specified file.
+    def write(self, overwrite: bool = True) -> '__class__':
+        """Writes the workflow to a file, overwriting an existing file desired.
 
-        If no filename is provided, the workflow name is used. If overwrite
+        If no filename has been set, the workflow name is used. If overwrite
         is True, then any existing file with the same name will be overwritten.
         If overwrite is False and a file exists with the same name, this
         method will raise an exception.
         """
-        if filename == "":
-            filename = self.name + '.yxmd'
-        
-        if not overwrite and os.path.isfile(filename):
-            raise FileExistsError('File "{}" already exists and overwrite is false'.format(filename))
+        self._set_filename(overwrite)
 
         pretty_xml = str(self)
 
-        with open(filename, 'w') as f:
+        with open(self.filename, 'w') as f:
             f.write(pretty_xml)
 
-    @newobj
-    def run(self, executable_path: str, filename: str = "", overwrite: bool = True) -> '__class__':
+    def toxml(self) -> ET.Element:
+        """Returns an XML representation of the workflow.
+        """
+        ayx_doc = ET.Element('AlteryxDocument')
+        ayx_doc.set('yxmdVer', self.yxmd_version)
+
+        tools = ET.SubElement(ayx_doc, 'Nodes')
+        for _, tool_val in self.tools.items():
+            tools.extend(tool_val.toxml())
+
+        connections = ET.SubElement(ayx_doc, 'Connections')
+        for connection in self.connections:
+            connections.extend(connection.toxml())
+
+        xml: str = xmltodict.unparse({'Root': {'Properties': self.properties}})
+        properties: ET.Element = ET.fromstring(xml)
+        ayx_doc.extend(properties)
+
+        return ayx_doc
+
+    @staticmethod
+    def read(filename: str) -> '__class__':
+        """Reads a workflow from the specified file and configures this instance accordingly.
+        """
+        workflow: Workflow = Workflow()
+        with open(filename) as wf:
+            xml = xmltodict.parse(wf.read())
+
+            ayx_doc = xml['AlteryxDocument']
+            try:
+                workflow.name = ayx_doc['Properties']['MetaInfo']['Name']
+            except KeyError:
+                workflow.name = 'New Workflow'
+
+            nodes = ayx_doc['Nodes']
+            for node in nodes['Node']:
+                tool_id: str = node['@ToolID']
+
+                gui_settings = node['GuiSettings']
+                plugin = gui_settings['@Plugin']
+
+                tool: Tool = ToolFactory.create_tool(plugin, tool_id)
+
+                position = gui_settings['Position']
+                tool.position = (int(position['@x']), int(position['@y']))
+
+                tool.properties = node['Properties']
+
+                engine_settings = node['EngineSettings']
+                tool.engine_dll = engine_settings['@EngineDll']
+                tool.engine_dll_entry_point = engine_settings['@EngineDllEntryPoint']
+
+                workflow.add_tool(tool)
+
+            connections = ayx_doc['Connections']
+            for connection in connections['Connection']:
+                origin = connection['Origin']
+                origin_tool_id: str = origin['@ToolID']
+                origin_connection: str = origin['@Connection']
+
+                destination = connection['Destination']
+                destination_tool_id: str = destination['@ToolID']
+                destination_connection: str = destination['@Connection']
+
+                workflow.add_connection(workflow.tools[origin_tool_id], origin_connection,
+                                    workflow.tools[destination_tool_id], destination_connection)
+
+                workflow.tools[origin_tool_id].add_output(destination_tool_id,
+                                                          origin_connection,
+                                                          destination_connection)
+                workflow.tools[destination_tool_id].add_input(origin_tool_id,
+                                                              origin_connection,
+                                                              destination_connection)
+
+            workflow.properties = ayx_doc['Properties']
+
+        return workflow
+
+    @staticmethod
+    def run(self, executable_path: str, overwrite: bool = True) -> None:
         """Runs the workflow using a locally installed copy of the Alteryx engine.
 
         If no filename is provided, the workflow name is used. If overwrite
@@ -116,48 +206,23 @@ class Workflow:
         If overwrite is False and a file exists with the same name, this
         method will raise an exception.
         """
-        if filename == "":
-            filename = self.name + '.yxmd'
-        
-        if not overwrite and os.path.isfile(filename):
-            raise FileExistsError('File "{}" already exists and overwrite is false'.format(filename))
+        self._set_filename(overwrite)
 
         pretty_xml = str(self)
 
-        with open(filename, 'w') as f:
+        with open(self.filename, 'w') as f:
             f.write(pretty_xml)
 
-        cmd = executable_path + ' ' + filename
+        cmd = f"{executable_path} {self.filename}"
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, creationflags=0x08000000)
         process.wait()
 
-    def toxml(self) -> ET.Element:
-        """Returns an XML representation of the workflow.
-        """
-        self.__set_configuration__()
+    def _set_filename(self, overwrite: bool = True):
+        if self.filename == "":
+            self.filename = f"{self.name}.yxmd"
 
-        ayx_doc = ET.Element('AlteryxDocument')
-        ayx_doc.set('yxmdVer', self.yxmd_version)
-
-        tools = ET.SubElement(ayx_doc, 'Nodes')
-        for _, tool_val in self.tools.items():
-            tools.extend(tool_val.toxml())
-        
-        connections = ET.SubElement(ayx_doc, 'Connections')
-        for connection in self.connections:
-            connections.extend(connection.toxml())
-
-        properties = ET.SubElement(ayx_doc, 'Properties')
-        for _, prop_val in self.properties.items():
-            xml = prop_val.toxml()
-            properties.extend(xml)
-
-        metainfo = ET.SubElement(properties, 'MetaInfo')
-        for _, mi_val in self.metainfo.items():
-            xml = mi_val.toxml()
-            metainfo.extend(xml)
-
-        return ayx_doc
+        if not overwrite and os.path.isfile(self.filename):
+            raise FileExistsError('File "{}" already exists and overwrite is false'.format(self.filename))
 
     def __repr__(self) -> str:
         xml = self.toxml()

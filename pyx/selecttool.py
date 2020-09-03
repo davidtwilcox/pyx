@@ -1,97 +1,55 @@
-from .ayxproperty import AyxProperty
 from .tool import Tool
-import xml.etree.ElementTree as ET
-from typing import Dict, List
-from dataclasses import dataclass
+from typing import Dict, Any
 
-
-@dataclass
-class SelectField:
-    """
-    Contains information for a field that may or may not be selected in a Select tool
-    """
-    field: str = ''
-    selected: bool = False
-
-
-@dataclass
-class SelectToolConfiguration:
-    """
-    Contains configuration information for a SelectTool instance.
-    """
-    order_changed: bool = False
-    comma_decimal: bool = False
+from .decorators import newobj
 
 
 class SelectTool(Tool):
     """
     Represents a Select tool in an Alteryx workflow.
     """
-    def __init__(self, tool_id: str, configuration: SelectToolConfiguration, select_fields: List[SelectField]):
+
+    def __init__(self, tool_id: str):
         super().__init__(tool_id)
         self.plugin = 'AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect'
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'
         self.engine_dll_entry_point = 'AlteryxSelect'
-        self.inputs.append('Input')
-        self.outputs.append('Output')
 
-        self.configuration = configuration
-        self.select_fields = select_fields
+    @property
+    def order_changed(self) -> bool:
+        return bool(self._configuration['OrderChanged']['@value'])
 
-    def __set_configuration__(self) -> None:
-        self.guisettings: Dict[str, AyxProperty] = dict({
-            'Position': AyxProperty('Position').set_attribute('x', str(self.position[0])).set_attribute('y', str(self.position[1]))
-        })
+    @order_changed.setter
+    def order_changed(self, value: bool) -> None:
+        self._configuration['OrderChanged']['@value'] = str(value)
 
-        fields: List[AyxProperty] = list()
-        for field in self.select_fields:
-            fields.append(
-                AyxProperty('SelectField')
-                .set_attribute('field', field.field)
-                .set_attribute('selected', str(field.selected))
-            )
+    @property
+    def comma_decimal(self) -> bool:
+        return bool(self._configuration['CommaDecimal']['@value'])
 
-        self.properties: Dict[str, AyxProperty] = dict({
-            'Configuration': AyxProperty('Configuration').add_child(
-                AyxProperty('OrderChanged', str(self.configuration.order_changed))
-            ).add_child(
-                AyxProperty('CommaDecimal', str(self.configuration.comma_decimal))
-            ).add_child(
-                AyxProperty('SelectFields').add_children(fields)
-            ),
-            'Annotation': AyxProperty('Annotation')
-                .set_attribute('DisplayMode', '0')
-                .add_child(AyxProperty('Name'))
-                .add_child(AyxProperty('DefaultAnnotationText'))
-                .add_child(AyxProperty('Left').set_attribute('value', 'False'))
-        })
+    @comma_decimal.setter
+    def comma_decimal(self, value: bool) -> None:
+        self._configuration['CommaDecimal']['@value'] = str(value)
 
-        self.engine_settings = AyxProperty('EngineSettings').set_attribute('EngineDll', self.engine_dll).set_attribute('EngineDllEntryPoint', self.engine_dll_entry_point)
+    @newobj
+    def set_select_field(self, field: str, selected: bool) -> '__class__':
+        pass
 
-    def toxml(self) -> ET.Element:
-        """
-        Returns an XML representation of the tool.
-        """
-        self.__set_configuration__()
-        
-        # Dummy element that ElementTree extend() will strip
-        root: ET.Element = ET.Element('root')
+    @newobj
+    def remove_select_field(self, field: str) -> '__class__':
+        pass
 
-        node: ET.SubElement = ET.SubElement(root, 'Node')
-        node.set('ToolID', self.tool_id)
+    @property
+    def _configuration(self) -> Dict[str, Any]:
+        if self.properties:
+            return self.properties['Configuration']
+        else:
+            raise NameError('Properties does not contain Configuration')
 
-        guisettings: ET.SubElement = ET.SubElement(node, 'GuiSettings')
-        guisettings.set('Plugin', self.plugin)
-        for _, guisettings_val in self.guisettings.items():
-            xml: ET.Element = guisettings_val.toxml()
-            guisettings.extend(xml)
-
-        properties = ET.SubElement(node, 'Properties')
-        for _, prop_val in self.properties.items():
-            xml: ET.Element = prop_val.toxml()
-            properties.extend(xml)        
-
-        node.extend(self.engine_settings.toxml())
-
-        return root
+    @property
+    def _select_fields(self) -> Dict[str, Any]:
+        if self.properties:
+            return self.properties['Configuration']['SelectFields']
+        else:
+            raise NameError('Properties does not contain Configuration > SelectFields')
 
