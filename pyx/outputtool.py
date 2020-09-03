@@ -25,10 +25,10 @@ class OutputTool(Tool):
     Represents an Output tool in an Alteryx workflow.
     """
 
-    def __init__(self, tool_id: str, configuration: OutputToolConfiguration):
+    def __init__(self, tool_id: str):
         super().__init__(tool_id)
         self.plugin = 'AlteryxBasePluginsGui.DbFileOutput.DbFileOutput'
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'
         self.engine_dll_entry_point = 'AlteryxDbFileOutput'
 
-        super()._can_have_output = False
+        super()._can_have_output(False)

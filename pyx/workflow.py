@@ -153,6 +153,8 @@ class Workflow:
             except KeyError:
                 workflow.name = 'New Workflow'
 
+            workflow.yxmd_version = ayx_doc['@yxmdVer']
+
             nodes = ayx_doc['Nodes']
             for node in nodes['Node']:
                 tool_id: str = node['@ToolID']

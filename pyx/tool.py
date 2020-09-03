@@ -94,13 +94,17 @@ class Tool:
     def properties(self, value: Dict[str, Any]) -> None:
         self._properties = value
 
-    @property
     def can_have_input(self) -> bool:
         return self._can_have_input
 
-    @property
+    def _can_have_input(self, value: bool) -> None:
+        self._can_have_input = value
+
     def can_have_output(self) -> bool:
         return self._can_have_output
+
+    def _can_have_output(self, value: bool) -> None:
+        self._can_have_output = value
 
     def is_source(self) -> bool:
         return len(self._inputs) == 0

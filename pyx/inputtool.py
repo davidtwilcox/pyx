@@ -14,7 +14,7 @@ class InputTool(Tool):
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'
         self.engine_dll_entry_point = 'AlteryxDbFileInput'
 
-        super()._can_have_input = False
+        super()._can_have_input(False)
 
     @property
     def input_file_name(self) -> str:
