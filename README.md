@@ -13,5 +13,5 @@ MIT license
 
 ## Contact
 #### David Wilcox
-* email: bigangryguy@gmail.com
+* email: [david@dtwil.co](mailto:david@dtwil.co)
 * twitter: [@davidtwilcox](https://twitter.com/davidtwilcox)
