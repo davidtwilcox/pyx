@@ -1,5 +1,5 @@
 from .tool import Tool
-from typing import Dict, Any
+from typing import List, Dict, Any
 
 from .decorators import newobj
 
@@ -17,15 +17,22 @@ class AutofieldTool(Tool):
 
     @newobj
     def set_field(self, field: str, selected: bool) -> '__class__':
-        pass
+        """Sets the specified field to selected or not in the tool configuration.
+        """
+        target: List[Dict[str, Any]] = [f for f in self._fields if f['@field'] == field]
+
+        for field in target:
+            field['@selected'] = selected
 
     @newobj
     def remove_field(self, field: str) -> '__class__':
+        """Removes the specified field from the tool configuration.
+        """
         pass
 
     @property
     def _fields(self) -> Dict[str, Any]:
         if self.properties:
-            return self.properties['Configuration']['Fields']
+            return self.properties['Configuration']['Fields']['Field']
         else:
-            raise NameError('Properties does not contain Configuration > Fields')
+            raise NameError('Properties does not contain Configuration > Fields > Field')

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<AlteryxDocument yxmdVer="2019.4">
+<AlteryxDocument yxmdVer="2020.2">
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
@@ -186,13 +186,6 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput"/>
     </Node>
-    <Node ToolID="7">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
-        <Position x="642" y="154"/>
-      </GuiSettings>
-      <Properties/>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput"/>
-    </Node>
   </Nodes>
   <Connections>
     <Connection>
@@ -214,10 +207,6 @@
     <Connection>
       <Origin ToolID="5" Connection="Output"/>
       <Destination ToolID="6" Connection="Input"/>
-    </Connection>
-    <Connection>
-      <Origin ToolID="5" Connection="Output"/>
-      <Destination ToolID="7" Connection="Input"/>
     </Connection>
   </Connections>
   <Properties>

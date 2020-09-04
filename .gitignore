@@ -132,4 +132,5 @@ dmypy.json
 .idea/
 
 test.py
-workflows/Example-1-Output.yxmd
+workflows/*-Output.yxmd
+workflows/*.bak

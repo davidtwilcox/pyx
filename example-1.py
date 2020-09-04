@@ -10,6 +10,8 @@ def main():
     workflow.add_tool(outputTool) \
             .add_connection(5, 'Output', outputTool.tool_id, 'Input')
 
+    workflow.tools[3].set_field('Responder', False)
+
     Workflow.write(workflow, 'workflows/Example-1-Output.yxmd')
 
 if __name__ == '__main__':

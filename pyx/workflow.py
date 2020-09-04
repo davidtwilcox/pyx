@@ -178,7 +178,7 @@ class Workflow:
 
         pretty_xml = str(workflow)
 
-        with open(workflow.filename, 'w') as f:
+        with open(filename, 'w') as f:
             f.write(pretty_xml)
 
     @staticmethod
