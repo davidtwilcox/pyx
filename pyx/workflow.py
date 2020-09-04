@@ -7,7 +7,7 @@ import xmltodict
 
 from .connection import Connection
 from .decorators import newobj
-from .tool import Tool
+from .tool import Tool, ToolPosition
 from .tool_factory import ToolFactory
 
 
@@ -38,7 +38,7 @@ class Workflow:
         self._name: str = ''
         self._filename: str = ''
         self._yxmd_version: str = ''
-        self._tools: Dict[str, Tool] = dict({})
+        self._tools: Dict[int, Tool] = dict({})
         self._connections: List[Connection] = list()
         self._properties: OrderedDict[Any, Any] = dict({})
 
@@ -67,11 +67,11 @@ class Workflow:
         self._yxmd_version = value
 
     @property
-    def tools(self) -> Dict[str, Tool]:
+    def tools(self) -> Dict[int, Tool]:
         return self._tools
 
     @tools.setter
-    def tools(self, value: Dict[str, Tool]) -> None:
+    def tools(self, value: Dict[int, Tool]) -> None:
         self._tools = value
 
     @property
@@ -99,7 +99,7 @@ class Workflow:
         self.tools[tool.tool_id] = tool
 
     @newobj
-    def remove_tool(self, tool_id: str) -> '__class__':
+    def remove_tool(self, tool_id: int) -> '__class__':
         """Removes the tool with the provided ID from the workflow.
 
         If a tool with the provided ID does not exist in the workflow, no action is taken.
@@ -107,15 +107,15 @@ class Workflow:
         self.tools.pop(tool_id, None)
 
     @newobj
-    def add_connection(self, origin_tool_id: str, origin_output: str,
-                          destination_tool_id: str, destination_input: str) -> '__class__':
+    def add_connection(self, origin_tool_id: int, origin_output: str,
+                          destination_tool_id: int, destination_input: str) -> '__class__':
         """Adds a connection from the origin tool to the destination tool.
         """
         self.connections.append(Connection(origin_tool_id, origin_output, destination_tool_id, destination_input))
 
     @newobj
-    def remove_connection(self, origin_tool_id: str, origin_output: str,
-                          destination_tool_id: str, destination_input: str) -> '__class__':
+    def remove_connection(self, origin_tool_id: int, origin_output: str,
+                          destination_tool_id: int, destination_input: str) -> '__class__':
         """Removes a connection from the workflow.
         """
         for c in self.connections:
@@ -177,7 +177,7 @@ class Workflow:
 
             nodes = ayx_doc['Nodes']
             for node in nodes['Node']:
-                tool_id: str = node['@ToolID']
+                tool_id: int = int(node['@ToolID'])
 
                 gui_settings = node['GuiSettings']
                 plugin = gui_settings['@Plugin']
@@ -185,7 +185,7 @@ class Workflow:
                 tool: Tool = ToolFactory.create_tool(plugin, tool_id)
 
                 position = gui_settings['Position']
-                tool.position = (int(position['@x']), int(position['@y']))
+                tool.position = ToolPosition(x=int(position['@x']), y=int(position['@y']))
 
                 tool.properties = node['Properties']
 
@@ -198,11 +198,11 @@ class Workflow:
             connections = ayx_doc['Connections']
             for connection in connections['Connection']:
                 origin = connection['Origin']
-                origin_tool_id: str = origin['@ToolID']
+                origin_tool_id: int = int(origin['@ToolID'])
                 origin_connection: str = origin['@Connection']
 
                 destination = connection['Destination']
-                destination_tool_id: str = destination['@ToolID']
+                destination_tool_id: int = int(destination['@ToolID'])
                 destination_connection: str = destination['@Connection']
 
                 workflow.add_connection(origin_tool_id, origin_connection,

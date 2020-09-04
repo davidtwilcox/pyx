@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-from typing import Tuple, Dict, List, Any
+from typing import Dict, List, Any
 from dataclasses import dataclass
 import xmltodict
 
@@ -9,19 +9,26 @@ from .decorators import newobj
 
 @dataclass
 class ToolConnection:
-    tool_id: str
-    output: str
-    input: str
+    tool_id: int = 0
+    output: str = 'Output'
+    input: str = 'Input'
+
+
+@dataclass
+class ToolPosition:
+    x: int = 0
+    y: int = 0
+
 
 class Tool:
     """
     Base class for representing an Alteryx tool (or Node in the workflow XML).
     """
 
-    def __init__(self, tool_id: str):
-        self._tool_id: str = tool_id
+    def __init__(self, tool_id: int):
+        self._tool_id: int = tool_id
         self._plugin: str = ''
-        self._position: Tuple[int, int] = (0, 0)
+        self._position: ToolPosition = ToolPosition()
         self._engine_dll: str = ''
         self._engine_dll_entry_point: str = ''
         self._inputs: List[ToolConnection] = list()
@@ -31,11 +38,11 @@ class Tool:
         self._can_have_output: bool = True
 
     @property
-    def tool_id(self) -> str:
+    def tool_id(self) -> int:
         return self._tool_id
 
     @tool_id.setter
-    def tool_id(self, value: str) -> None:
+    def tool_id(self, value: int) -> None:
         self._tool_id = value
 
     @property
@@ -47,11 +54,11 @@ class Tool:
         self._plugin = value
 
     @property
-    def position(self) -> Tuple[int, int]:
+    def position(self) -> ToolPosition:
         return self._position
 
     @position.setter
-    def position(self, value: Tuple[int, int]) -> None:
+    def position(self, value: ToolPosition) -> None:
         self._position = value
 
     @property
@@ -135,13 +142,13 @@ class Tool:
         root: ET.Element = ET.Element('Root') # Dummy element that will be eliminated if used to extend other XML
 
         tool: ET.SubElement = ET.SubElement(root, 'Node')
-        tool.set('ToolID', self.tool_id)
+        tool.set('ToolID', str(self.tool_id))
 
         gui_settings: ET.SubElement = ET.SubElement(tool, 'GuiSettings')
         gui_settings.set('Plugin', self.plugin)
-        position: ET.SubElement = ET.SubElement(gui_settings, 'Position')
-        position.set('x', str(self.position[0]))
-        position.set('y', str(self.position[1]))
+        pos: ET.SubElement = ET.SubElement(gui_settings, 'Position')
+        pos.set('x', str(self.position.x))
+        pos.set('y', str(self.position.y))
 
         xml: str = xmltodict.unparse({'Root':{'Properties':self.properties}})
         properties: ET.Element = ET.fromstring(xml)

@@ -8,9 +8,9 @@ class Connection:
     """
     Represents a connection between two tools.
     """
-    origin_tool_id: str = ''
+    origin_tool_id: int = 0
     origin_output: str = ''
-    destination_tool_id: str = ''
+    destination_tool_id: int = 0
     destination_input: str = ''
 
     def toxml(self) -> ET.Element:
@@ -22,11 +22,11 @@ class Connection:
         connection = ET.SubElement(root, 'Connection')
 
         origin = ET.SubElement(connection, 'Origin')
-        origin.set('ToolID', self.origin_tool_id)
+        origin.set('ToolID', str(self.origin_tool_id))
         origin.set('Connection', self.origin_output)
 
         destination = ET.SubElement(connection, 'Destination')
-        destination.set('ToolID', self.destination_tool_id)
+        destination.set('ToolID', str(self.destination_tool_id))
         destination.set('Connection', self.destination_input)
 
         return root
