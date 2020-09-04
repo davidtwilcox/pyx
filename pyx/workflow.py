@@ -92,32 +92,36 @@ class Workflow:
 
     @newobj
     def add_tool(self, tool: Tool) -> '__class__':
-        """Adds the provided Tool instance to the workflow
+        """Adds the provided Tool instance to the workflow.
+
+        If a tool with the same ID exists in the workflow, the provided tool will replace it.
         """
         self.tools[tool.tool_id] = tool
 
     @newobj
-    def add_connection(self, origin: Tool, origin_output: str, destination: Tool, destination_input: str) -> '__class__':
+    def remove_tool(self, tool_id: str) -> '__class__':
+        """Removes the tool with the provided ID from the workflow.
+
+        If a tool with the provided ID does not exist in the workflow, no action is taken.
         """
-        Adds a connection from the origin tool to the destination tool.
-        """
-        self.connections.append(Connection(origin, origin_output, destination, destination_input))
+        self.tools.pop(tool_id, None)
 
     @newobj
-    def write(self, overwrite: bool = True) -> '__class__':
-        """Writes the workflow to a file, overwriting an existing file desired.
-
-        If no filename has been set, the workflow name is used. If overwrite
-        is True, then any existing file with the same name will be overwritten.
-        If overwrite is False and a file exists with the same name, this
-        method will raise an exception.
+    def add_connection(self, origin_tool_id: str, origin_output: str,
+                          destination_tool_id: str, destination_input: str) -> '__class__':
+        """Adds a connection from the origin tool to the destination tool.
         """
-        self._set_filename(overwrite)
+        self.connections.append(Connection(origin_tool_id, origin_output, destination_tool_id, destination_input))
 
-        pretty_xml = str(self)
-
-        with open(self.filename, 'w') as f:
-            f.write(pretty_xml)
+    @newobj
+    def remove_connection(self, origin_tool_id: str, origin_output: str,
+                          destination_tool_id: str, destination_input: str) -> '__class__':
+        """Removes a connection from the workflow.
+        """
+        for c in self.connections:
+            if c.origin_tool_id == origin_tool_id and c.origin_output == origin_output and \
+               c.destination_tool_id == destination_tool_id and c.destination_input == destination_input:
+                self.connections.remove(c)
 
     def toxml(self) -> ET.Element:
         """Returns an XML representation of the workflow.
@@ -138,6 +142,22 @@ class Workflow:
         ayx_doc.extend(properties)
 
         return ayx_doc
+
+    @staticmethod
+    def write(workflow: '__class__', overwrite: bool = True) -> None:
+        """Writes the workflow to a file, overwriting an existing file desired.
+
+        If no filename has been set, the workflow name is used. If overwrite
+        is True, then any existing file with the same name will be overwritten.
+        If overwrite is False and a file exists with the same name, this
+        method will raise an exception.
+        """
+        workflow._set_filename(overwrite)
+
+        pretty_xml = str(workflow)
+
+        with open(workflow.filename, 'w') as f:
+            f.write(pretty_xml)
 
     @staticmethod
     def read(filename: str) -> '__class__':
@@ -185,8 +205,8 @@ class Workflow:
                 destination_tool_id: str = destination['@ToolID']
                 destination_connection: str = destination['@Connection']
 
-                workflow.add_connection(workflow.tools[origin_tool_id], origin_connection,
-                                    workflow.tools[destination_tool_id], destination_connection)
+                workflow.add_connection(origin_tool_id, origin_connection,
+                                    destination_tool_id, destination_connection)
 
                 workflow.tools[origin_tool_id].add_output(destination_tool_id,
                                                           origin_connection,
