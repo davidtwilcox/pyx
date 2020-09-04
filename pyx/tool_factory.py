@@ -1,3 +1,5 @@
+from typing import Dict
+
 from .tool import Tool
 from .inputtool import InputTool
 from .selecttool import SelectTool
@@ -11,20 +13,18 @@ class ToolFactory:
     """
     Creates a concrete tool class based on a plugin file name.
     """
+    registry: Dict[str, type] = {
+        'AlteryxBasePluginsGui.DbFileInput.DbFileInput': InputTool,
+        'AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect': SelectTool,
+        'AlteryxBasePluginsGui.AutoField.AutoField': AutofieldTool,
+        'AlteryxBasePluginsGui.Filter.Filter': FilterTool,
+        'AlteryxBasePluginsGui.Sort.Sort': SortTool,
+        'AlteryxBasePluginsGui.DbFileOutput.DbFileOutput': OutputTool,
+    }
 
     @staticmethod
     def create_tool(plugin: str, tool_id: str) -> Tool:
-        if plugin == 'AlteryxBasePluginsGui.DbFileInput.DbFileInput':
-            return InputTool(tool_id)
-        elif plugin == 'AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect':
-            return SelectTool(tool_id)
-        elif plugin == 'AlteryxBasePluginsGui.AutoField.AutoField':
-            return AutofieldTool(tool_id)
-        elif plugin == 'AlteryxBasePluginsGui.Filter.Filter':
-            return FilterTool(tool_id)
-        elif plugin == 'AlteryxBasePluginsGui.Sort.Sort':
-            return SortTool(tool_id)
-        elif plugin == 'AlteryxBasePluginsGui.DbFileOutput.DbFileOutput':
-            return OutputTool(tool_id)
+        if plugin in ToolFactory.registry:
+            return ToolFactory.registry[plugin](tool_id)
         else:
             return Tool(tool_id)
