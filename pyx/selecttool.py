@@ -9,7 +9,7 @@ class SelectTool(Tool):
     Represents a Select tool in an Alteryx workflow.
     """
 
-    def __init__(self, tool_id: str):
+    def __init__(self, tool_id: int):
         super().__init__(tool_id)
         self.plugin = 'AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect'
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'

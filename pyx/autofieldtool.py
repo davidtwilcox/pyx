@@ -9,7 +9,7 @@ class AutofieldTool(Tool):
     Represents an Autofield tool in an Alteryx workflow.
     """
 
-    def __init__(self, tool_id: str):
+    def __init__(self, tool_id: int):
         super().__init__(tool_id)
         self.plugin = 'AlteryxBasePluginsGui.AutoField.AutoField'
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'

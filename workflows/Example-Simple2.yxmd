@@ -1,13 +1,13 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <AlteryxDocument yxmdVer="2019.4">
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="54" y="66" />
+        <Position x="54" y="66"/>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Passwords />
+          <Passwords/>
           <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="0">C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv</File>
           <FormatSpecificOptions>
             <CodePage>28591</CodePage>
@@ -21,100 +21,100 @@
           </FormatSpecificOptions>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <DefaultAnnotationText>Customers.csv</DefaultAnnotationText>
-          <Left value="False" />
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="CustomerID" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="Store Number" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="Customer Segment" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="Responder" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="First Name" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="Last Name" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="Address" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="City" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="State" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="Zip" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="Lat" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="Lon" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
+            <Field name="CustomerID" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="Store Number" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="Customer Segment" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="Responder" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="First Name" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="Last Name" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="Address" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="City" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="State" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="Zip" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="Lat" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="Lon" size="254" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput"/>
     </Node>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-        <Position x="289" y="66" />
+        <Position x="289" y="66"/>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <OrderChanged value="False" />
-          <CommaDecimal value="False" />
+          <OrderChanged value="False"/>
+          <CommaDecimal value="False"/>
           <SelectFields>
-            <SelectField field="Lat" selected="False" />
-            <SelectField field="Lon" selected="False" />
-            <SelectField field="*Unknown" selected="True" />
+            <SelectField field="Lat" selected="False"/>
+            <SelectField field="Lon" selected="False"/>
+            <SelectField field="*Unknown" selected="True"/>
           </SelectFields>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect"/>
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AutoField.AutoField">
-        <Position x="172" y="66" />
+        <Position x="172" y="66"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <Fields>
-            <Field field="CustomerID" selected="True" />
-            <Field field="Store Number" selected="True" />
-            <Field field="Customer Segment" selected="True" />
-            <Field field="Responder" selected="True" />
-            <Field field="First Name" selected="True" />
-            <Field field="Last Name" selected="True" />
-            <Field field="Address" selected="True" />
-            <Field field="City" selected="True" />
-            <Field field="State" selected="True" />
-            <Field field="Zip" selected="True" />
-            <Field field="Lat" selected="True" />
-            <Field field="Lon" selected="True" />
-            <Field field="*Unknown" selected="True" />
+            <Field field="CustomerID" selected="True"/>
+            <Field field="Store Number" selected="True"/>
+            <Field field="Customer Segment" selected="True"/>
+            <Field field="Responder" selected="True"/>
+            <Field field="First Name" selected="True"/>
+            <Field field="Last Name" selected="True"/>
+            <Field field="Address" selected="True"/>
+            <Field field="City" selected="True"/>
+            <Field field="State" selected="True"/>
+            <Field field="Zip" selected="True"/>
+            <Field field="Lat" selected="True"/>
+            <Field field="Lon" selected="True"/>
+            <Field field="*Unknown" selected="True"/>
           </Fields>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="CustomerID" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Int16" />
-            <Field name="Store Number" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Byte" />
-            <Field name="Customer Segment" size="14" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="String" />
-            <Field name="Responder" size="3" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="String" />
-            <Field name="First Name" size="10" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="String" />
-            <Field name="Last Name" size="18" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="Address" size="28" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="City" size="13" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String" />
-            <Field name="State" size="2" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="String" />
-            <Field name="Zip" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Int32" />
-            <Field name="Lat" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Double" />
-            <Field name="Lon" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Double" />
+            <Field name="CustomerID" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Int16"/>
+            <Field name="Store Number" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Byte"/>
+            <Field name="Customer Segment" size="14" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="String"/>
+            <Field name="Responder" size="3" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="String"/>
+            <Field name="First Name" size="10" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="String"/>
+            <Field name="Last Name" size="18" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="Address" size="28" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="City" size="13" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="V_String"/>
+            <Field name="State" size="2" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="String"/>
+            <Field name="Zip" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Int32"/>
+            <Field name="Lat" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Double"/>
+            <Field name="Lon" source="File: C:\Program Files\Alteryx\Samples\en\SampleData\Customers.csv" type="Double"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxAutoField" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxAutoField"/>
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
-        <Position x="407" y="66" />
+        <Position x="407" y="66"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -126,8 +126,7 @@
               <IgnoreTimeInDateTime>True</IgnoreTimeInDateTime>
               <DateType>fixed</DateType>
               <PeriodDate>2019-12-19 14:33:35</PeriodDate>
-              <PeriodType>
-              </PeriodType>
+              <PeriodType/>
               <PeriodCount>0</PeriodCount>
               <Operand>DENVER</Operand>
               <StartDate>2019-12-19 14:33:35</StartDate>
@@ -136,39 +135,39 @@
           </Simple>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <DefaultAnnotationText>[City] != "DENVER"</DefaultAnnotationText>
-          <Left value="False" />
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter"/>
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Sort.Sort">
-        <Position x="524" y="54" />
+        <Position x="524" y="54"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <SortInfo locale="0">
-            <Field field="Store Number" order="Ascending" />
+            <Field field="Store Number" order="Ascending"/>
           </SortInfo>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <DefaultAnnotationText>Store Number - Ascending</DefaultAnnotationText>
-          <Left value="False" />
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSort" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSort"/>
     </Node>
     <Node ToolID="6">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
-        <Position x="642" y="54" />
+        <Position x="642" y="54"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <File MaxRecords="" FileFormat="0">output.csv</File>
-          <Passwords />
+          <Passwords/>
           <FormatSpecificOptions>
             <LineEndStyle>CRLF</LineEndStyle>
             <Delimeter>,</Delimeter>
@@ -177,75 +176,86 @@
             <CodePage>28591</CodePage>
             <WriteBOM>True</WriteBOM>
           </FormatSpecificOptions>
-          <MultiFile value="False" />
+          <MultiFile value="False"/>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <DefaultAnnotationText>output.csv</DefaultAnnotationText>
-          <Left value="False" />
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput"/>
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="642" y="154"/>
+      </GuiSettings>
+      <Properties/>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput"/>
     </Node>
   </Nodes>
   <Connections>
     <Connection>
-      <Origin ToolID="1" Connection="Output" />
-      <Destination ToolID="3" Connection="Input" />
+      <Origin ToolID="1" Connection="Output"/>
+      <Destination ToolID="3" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="2" Connection="Output" />
-      <Destination ToolID="4" Connection="Input" />
+      <Origin ToolID="2" Connection="Output"/>
+      <Destination ToolID="4" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="3" Connection="Output" />
-      <Destination ToolID="2" Connection="Input" />
+      <Origin ToolID="3" Connection="Output"/>
+      <Destination ToolID="2" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="True" />
-      <Destination ToolID="5" Connection="Input" />
+      <Origin ToolID="4" Connection="True"/>
+      <Destination ToolID="5" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="5" Connection="Output" />
-      <Destination ToolID="6" Connection="Input" />
+      <Origin ToolID="5" Connection="Output"/>
+      <Destination ToolID="6" Connection="Input"/>
+    </Connection>
+    <Connection>
+      <Origin ToolID="5" Connection="Output"/>
+      <Destination ToolID="7" Connection="Input"/>
     </Connection>
   </Connections>
   <Properties>
-    <Memory default="True" />
-    <GlobalRecordLimit value="0" />
-    <TempFiles default="True" />
-    <Annotation on="True" includeToolName="False" />
-    <ConvErrorLimit value="10" />
-    <ConvErrorLimit_Stop value="False" />
-    <CancelOnError value="False" />
-    <DisableBrowse value="False" />
-    <EnablePerformanceProfiling value="False" />
-    <DisableAllOutput value="False" />
-    <ShowAllMacroMessages value="False" />
-    <ShowConnectionStatusIsOn value="True" />
-    <ShowConnectionStatusOnlyWhenRunning value="True" />
-    <ZoomLevel value="0" />
+    <Memory default="True"/>
+    <GlobalRecordLimit value="0"/>
+    <TempFiles default="True"/>
+    <Annotation on="True" includeToolName="False"/>
+    <ConvErrorLimit value="10"/>
+    <ConvErrorLimit_Stop value="False"/>
+    <CancelOnError value="False"/>
+    <DisableBrowse value="False"/>
+    <EnablePerformanceProfiling value="False"/>
+    <DisableAllOutput value="False"/>
+    <ShowAllMacroMessages value="False"/>
+    <ShowConnectionStatusIsOn value="True"/>
+    <ShowConnectionStatusOnlyWhenRunning value="True"/>
+    <ZoomLevel value="0"/>
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
-      <NameIsFileName value="True" />
+      <NameIsFileName value="True"/>
       <Name>Example-Simple2</Name>
-      <Description />
-      <RootToolName />
-      <ToolVersion />
-      <ToolInDb value="False" />
-      <CategoryName />
-      <SearchTags />
-      <Author />
-      <Company />
-      <Copyright />
-      <DescriptionLink actual="" displayed="" />
+      <Description/>
+      <RootToolName/>
+      <ToolVersion/>
+      <ToolInDb value="False"/>
+      <CategoryName/>
+      <SearchTags/>
+      <Author/>
+      <Company/>
+      <Copyright/>
+      <DescriptionLink actual="" displayed=""/>
       <Example>
-        <Description />
-        <File />
+        <Description/>
+        <File/>
       </Example>
     </MetaInfo>
     <Events>
-      <Enabled value="True" />
+      <Enabled value="True"/>
     </Events>
   </Properties>
 </AlteryxDocument>

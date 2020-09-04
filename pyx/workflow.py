@@ -123,6 +123,27 @@ class Workflow:
                c.destination_tool_id == destination_tool_id and c.destination_input == destination_input:
                 self.connections.remove(c)
 
+    def get_new_tool_id(self) -> int:
+        """Gets a new unique tool ID.
+
+        The tool ID is unique at the time it is retrieved. If another tool with the same ID is added to the
+        workflow, this ID will no longer be unique.
+        """
+        max_tool_id: int = max(k for k, _ in self.tools.items())
+        return max_tool_id + 1
+
+    def position_left(self, tool_id: int, padding: int = 100) -> ToolPosition:
+        return ToolPosition(x=self.tools[tool_id].position.x - padding, y=self.tools[tool_id].position.y)
+
+    def position_right(self, tool_id: int, padding: int = 100) -> ToolPosition:
+        return ToolPosition(x=self.tools[tool_id].position.x + padding, y=self.tools[tool_id].position.y)
+
+    def position_above(self, tool_id: int, padding: int = 100) -> ToolPosition:
+        return ToolPosition(x=self.tools[tool_id].position.x, y=self.tools[tool_id].position.y - padding)
+
+    def position_below(self, tool_id: int, padding: int = 100) -> ToolPosition:
+        return ToolPosition(x=self.tools[tool_id].position.x, y=self.tools[tool_id].position.y + padding)
+
     def toxml(self) -> ET.Element:
         """Returns an XML representation of the workflow.
         """
@@ -144,7 +165,7 @@ class Workflow:
         return ayx_doc
 
     @staticmethod
-    def write(workflow: '__class__', overwrite: bool = True) -> None:
+    def write(workflow: '__class__', filename: str, overwrite: bool = True) -> None:
         """Writes the workflow to a file, overwriting an existing file desired.
 
         If no filename has been set, the workflow name is used. If overwrite
@@ -152,7 +173,8 @@ class Workflow:
         If overwrite is False and a file exists with the same name, this
         method will raise an exception.
         """
-        workflow._set_filename(overwrite)
+        if not overwrite and os.path.isfile(filename):
+            raise FileExistsError(f"File '{filename}' already exists and overwrite is false")
 
         pretty_xml = str(workflow)
 
@@ -164,6 +186,7 @@ class Workflow:
         """Reads a workflow from the specified file and configures this instance accordingly.
         """
         workflow: Workflow = Workflow()
+        workflow.filename = filename
         with open(filename) as wf:
             xml = xmltodict.parse(wf.read())
 
@@ -220,7 +243,7 @@ class Workflow:
         return workflow
 
     @staticmethod
-    def run(self, executable_path: str, overwrite: bool = True) -> None:
+    def run(filename: str, executable_path: str, overwrite: bool = True) -> None:
         """Runs the workflow using a locally installed copy of the Alteryx engine.
 
         If no filename is provided, the workflow name is used. If overwrite
@@ -228,23 +251,9 @@ class Workflow:
         If overwrite is False and a file exists with the same name, this
         method will raise an exception.
         """
-        self._set_filename(overwrite)
-
-        pretty_xml = str(self)
-
-        with open(self.filename, 'w') as f:
-            f.write(pretty_xml)
-
-        cmd = f"{executable_path} {self.filename}"
+        cmd = f"{executable_path} {filename}"
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, creationflags=0x08000000)
         process.wait()
-
-    def _set_filename(self, overwrite: bool = True):
-        if self.filename == "":
-            self.filename = f"{self.name}.yxmd"
-
-        if not overwrite and os.path.isfile(self.filename):
-            raise FileExistsError('File "{}" already exists and overwrite is false'.format(self.filename))
 
     def __repr__(self) -> str:
         xml = self.toxml()

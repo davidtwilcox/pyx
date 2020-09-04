@@ -32,7 +32,7 @@ class FilterTool(Tool):
     """
     Represents a Filter tool in an Alteryx workflow.
     """
-    def __init__(self, tool_id: str):
+    def __init__(self, tool_id: int):
         super().__init__(tool_id)
         self.plugin = 'AlteryxBasePluginsGui.Filter.Filter'
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'

@@ -8,7 +8,7 @@ class InputTool(Tool):
     Represents an Input tool in an Alteryx workflow.
     """
 
-    def __init__(self, tool_id: str):
+    def __init__(self, tool_id: int):
         super().__init__(tool_id)
         self.plugin = 'AlteryxBasePluginsGui.DbFileInput.DbFileInput'
         self.engine_dll = 'AlteryxBasePluginsEngine.dll'
