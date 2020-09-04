@@ -1,5 +1,6 @@
 from .tool import Tool
-from typing import List, Dict, Any
+from collections import OrderedDict
+from typing import List, Dict, Tuple, Any
 
 from .decorators import newobj
 
@@ -19,16 +20,41 @@ class AutofieldTool(Tool):
     def set_field(self, field: str, selected: bool) -> '__class__':
         """Sets the specified field to selected or not in the tool configuration.
         """
-        target: List[Dict[str, Any]] = [f for f in self._fields if f['@field'] == field]
+        target: List[Any] = [f for f in self._fields if '@field' in f and f['@field'] == field]
 
-        for field in target:
-            field['@selected'] = selected
+        if target:
+            for field in target:
+                field['@selected'] = str(selected)
+        else:
+            self._fields.append(OrderedDict([('@field', field), ('@selected', str(selected))]))
+
+    @newobj
+    def get_field_selection(self, field: str) -> bool:
+        """Returns the selection status of the specified field.
+
+        Will return False if the field is not configured in the workflow.
+        """
+        target: List[Any] = [f for f in self._fields if '@field' in f and f['@field'] == field]
+
+        if target:
+            return '@selected' in target[0] and bool(target[0]['@selected'])
+        else:
+            return False
 
     @newobj
     def remove_field(self, field: str) -> '__class__':
         """Removes the specified field from the tool configuration.
         """
-        pass
+        self.properties['Configuration']['Fields']['Field'] = \
+            [f for f in self._fields if '@field' in f and f['@field'] != field]
+
+    def get_all_fields(self) -> List[Tuple[str, bool]]:
+        """Returns a list of all fields configured in the tool.
+        """
+        all: List[Tuple[str, bool]] = \
+            [(f['@field'], bool(f['@selected'])) for f in self._fields if '@field' in f and '@selected' in f]
+
+        return all
 
     @property
     def _fields(self) -> Dict[str, Any]:
