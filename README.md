@@ -123,6 +123,7 @@ See the [open issues](https://github.com/bigangryguy/pyx/issues) for a list of p
   * Until then, the base Tool class supports all existing tools through the `properties` property, which exposes the 
 tool configuration as a set of nested `OrderedDict`. See the `xmltodict` module documentation for the syntax
 * Add more API documentation
+* Implement unit tests
 
 
 <!-- CONTRIBUTING -->
